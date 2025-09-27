@@ -54,7 +54,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           RAND=$((RANDOM % 100))
-          if [ $RAND -lt 30 ]; then
+          if [ $RAND -lt 40 ]; then
             echo "生成每日 Issue"
             gh issue create --title "Daily Issue - $(TZ='Asia/Shanghai' date '+%Y-%m-%d')" \
                              --body "随机生成每日 Issue 🌱" \
@@ -106,7 +106,16 @@ jobs:
           # 提交 review + 评论（确保经过审查流程）
           gh pr review "$PR_NUM" --comment --body "🤖 自动审查并评论：看起来不错！"
 
-          # 自动合并 PR（使用 squash 或 merge）
+          # 确保分支更新到最新 main
+          echo "更新 PR #$PR_NUM 分支到最新 main..."
+          gh pr checkout "$PR_NUM"
+          git fetch origin main
+          git rebase origin/main || git merge origin/main --no-edit
+          git push origin HEAD --force
+          git checkout -
+
+          # 自动合并 PR（使用 squash）
+          echo "合并 PR #$PR_NUM ..."
           gh pr merge "$PR_NUM" --squash --delete-branch --repo "$TARGET_REPO" --admin
           
       # 定期清理已合并的旧分支（7天前）
