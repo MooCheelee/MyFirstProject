@@ -162,16 +162,6 @@ jobs:
               --field order=desc \
               --field per_page=50)
 
-            # 获取前 50 个最热门仓库 (按 stars 排序)
-            REPOS=$(gh api -H "Accept: application/vnd.github+json" \
-              /search/repositories \
-              -q '.items[].full_name' \
-              --method GET \
-              --field q="stars:>10000" \
-              --field sort=stars \
-              --field order=desc \
-              --field per_page=50)
-
             # 随机选择 1~2 个仓库
             COUNT=$(( (RANDOM % 2) + 1 ))
             SELECTED=$(echo "$REPOS" | shuf -n $COUNT)
