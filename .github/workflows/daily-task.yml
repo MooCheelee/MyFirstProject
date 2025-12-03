@@ -54,7 +54,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           RAND=$((RANDOM % 100))
-          if [ $RAND -lt 35 ]; then
+          if [ $RAND -lt 20 ]; then
             echo "生成每日 Issue"
             gh issue create --title "Daily Issue - $(TZ='Asia/Shanghai' date '+%Y-%m-%d')" \
                              --body "随机生成每日 Issue 🌱" \
